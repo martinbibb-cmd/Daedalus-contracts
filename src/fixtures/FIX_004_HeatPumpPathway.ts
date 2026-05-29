@@ -56,6 +56,7 @@ export const FIX_004_HeatPumpPathway: SurveyFixtureV1_1 = {
         },
       ],
     },
+    contractVersion: "1.1.0",
   },
   recommendations: {
     recommendations: [
