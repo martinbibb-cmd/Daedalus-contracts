@@ -1,156 +1,62 @@
 import {
-  SurveyFixtureSchema,
-  SurveyFixtureJsonSchema,
-  loadFixture,
   FIX_001_OpenVentedRegular,
   FIX_002_SystemUnvented,
   FIX_003_CombiFlat,
   FIX_004_HeatPumpPathway,
+  SurveyFixtureJsonSchema,
+  SurveyFixtureSchema,
+  loadFixture,
 } from "./index";
 
 const ALL_FIXTURES = [
-  { id: "FIX_001", fixture: FIX_001_OpenVentedRegular },
-  { id: "FIX_002", fixture: FIX_002_SystemUnvented },
-  { id: "FIX_003", fixture: FIX_003_CombiFlat },
-  { id: "FIX_004", fixture: FIX_004_HeatPumpPathway },
+  FIX_001_OpenVentedRegular,
+  FIX_002_SystemUnvented,
+  FIX_003_CombiFlat,
+  FIX_004_HeatPumpPathway,
 ];
 
 describe("SurveyFixtureSchema", () => {
-  it("exports a JSON schema object", () => {
+  it("exports a json schema", () => {
     expect(typeof SurveyFixtureJsonSchema).toBe("object");
   });
-});
 
-describe("loadFixture", () => {
-  it("loads and validates each fixture without throwing", () => {
-    ALL_FIXTURES.forEach(({ id, fixture }) => {
+  it("loads all fixtures", () => {
+    ALL_FIXTURES.forEach((fixture) => {
       expect(() => loadFixture(fixture)).not.toThrow();
-      const loaded = loadFixture(fixture);
-      expect(loaded.fixtureId).toBe(id);
+      const parsed = SurveyFixtureSchema.parse(fixture);
+      expect(parsed.property.site.structures.length).toBeGreaterThan(0);
     });
   });
 });
 
-describe("FIX_001_OpenVentedRegular", () => {
-  let fix: ReturnType<typeof loadFixture>;
-  beforeAll(() => {
-    fix = loadFixture(FIX_001_OpenVentedRegular);
+describe("V1.1 fixture constraints", () => {
+  it("uses Site -> Structure -> Space", () => {
+    const fix = loadFixture(FIX_001_OpenVentedRegular);
+    expect(fix.property.site.structures[0].spaces.length).toBeGreaterThan(0);
   });
 
-  it("has correct fixtureId", () => {
-    expect(fix.fixtureId).toBe("FIX_001");
+  it("has fabric layer stacks", () => {
+    const fix = loadFixture(FIX_001_OpenVentedRegular);
+    expect(fix.fabric.elements[0].layerStack.length).toBeGreaterThan(0);
   });
 
-  it("is an open vented regular system", () => {
-    expect(fix.hydraulics.systemType.value).toBe("OpenVentedRegular");
+  it("has closed-loop hydraulics graph", () => {
+    const fix = loadFixture(FIX_001_OpenVentedRegular);
+    const sequence = fix.hydraulics.network.loops[0].portSequence;
+    expect(sequence[0]).toBe(sequence[sequence.length - 1]);
   });
 
-  it("has a vented indirect cylinder", () => {
-    expect(fix.systemComponents.hotWaterCylinder?.cylinderType.value).toBe(
-      "VentedIndirect"
-    );
+  it("has water supply profile with pressure and flow", () => {
+    const fix = loadFixture(FIX_001_OpenVentedRegular);
+    expect(fix.waterSupply.profile.staticPressureBar.value).toBeGreaterThan(0);
+    expect(fix.waterSupply.profile.dynamicPressureBar.value).toBeGreaterThan(0);
+    expect(fix.waterSupply.profile.peakFlowLPerMin.value).toBeGreaterThan(0);
   });
 
-  it("has an F&E tank expansion type", () => {
-    expect(fix.hydraulics.systemPressure.expansionType.value).toBe(
-      "OpenVentedFAndETank"
-    );
-  });
-
-  it("validates against SurveyFixtureSchema", () => {
-    const result = SurveyFixtureSchema.safeParse(FIX_001_OpenVentedRegular);
-    expect(result.success).toBe(true);
-  });
-});
-
-describe("FIX_002_SystemUnvented", () => {
-  let fix: ReturnType<typeof loadFixture>;
-  beforeAll(() => {
-    fix = loadFixture(FIX_002_SystemUnvented);
-  });
-
-  it("has correct fixtureId", () => {
-    expect(fix.fixtureId).toBe("FIX_002");
-  });
-
-  it("is a system boiler unvented", () => {
-    expect(fix.hydraulics.systemType.value).toBe("SystemBoilerUnvented");
-  });
-
-  it("has an unvented indirect cylinder", () => {
-    expect(fix.systemComponents.hotWaterCylinder?.cylinderType.value).toBe(
-      "UnventedIndirect"
-    );
-  });
-
-  it("has sealed expansion vessel", () => {
-    expect(fix.hydraulics.systemPressure.expansionType.value).toBe(
-      "SealedExpansionVessel"
-    );
-  });
-});
-
-describe("FIX_003_CombiFlat", () => {
-  let fix: ReturnType<typeof loadFixture>;
-  beforeAll(() => {
-    fix = loadFixture(FIX_003_CombiFlat);
-  });
-
-  it("has correct fixtureId", () => {
-    expect(fix.fixtureId).toBe("FIX_003");
-  });
-
-  it("is a combi system", () => {
-    expect(fix.hydraulics.systemType.value).toBe("Combi");
-  });
-
-  it("has no hot water cylinder", () => {
-    expect(fix.systemComponents.hotWaterCylinder).toBeUndefined();
-  });
-
-  it("has instantaneous hot water distribution", () => {
-    expect(fix.waterSupply.hotWaterDistributionType.value).toBe(
-      "Instantaneous"
-    );
-  });
-
-  it("is in a flat", () => {
-    expect(fix.property.propertyType.value).toBe("Flat");
-  });
-});
-
-describe("FIX_004_HeatPumpPathway", () => {
-  let fix: ReturnType<typeof loadFixture>;
-  beforeAll(() => {
-    fix = loadFixture(FIX_004_HeatPumpPathway);
-  });
-
-  it("has correct fixtureId", () => {
-    expect(fix.fixtureId).toBe("FIX_004");
-  });
-
-  it("has recommendations for heat pump upgrade", () => {
-    const hpRec = fix.recommendations.recommendations.find(
-      (r) => r.category === "HeatSourceUpgrade"
-    );
-    expect(hpRec).toBeDefined();
-  });
-
-  it("has recommendation for cavity wall insulation", () => {
-    const insRec = fix.recommendations.recommendations.find(
-      (r) => r.category === "InsulationImprovement"
-    );
-    expect(insRec).toBeDefined();
-  });
-
-  it("has evidence items", () => {
-    expect(fix.evidencePack.items.length).toBeGreaterThan(0);
-  });
-
-  it("has serviceability items with remaining life", () => {
-    const boilerItem = fix.serviceability.items.find(
-      (i) => i.component === "Combi Boiler"
-    );
-    expect(boilerItem?.estimatedRemainingLifeYears?.value).toBe(4);
+  it("FIX_004 includes placeholders only and no ASHP recommendation text", () => {
+    const fix = loadFixture(FIX_004_HeatPumpPathway);
+    const recText = JSON.stringify(fix.recommendations);
+    expect(recText).toContain("RecommendationV1 placeholder");
+    expect(recText).not.toMatch(/ASHP recommendations/i);
   });
 });

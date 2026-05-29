@@ -1,36 +1,27 @@
-import {
-  WaterSupplyContractSchema,
-  WaterSupplyContractJsonSchema,
-} from "./waterSupply";
+import { WaterSupplyContractSchema } from "./index";
 
 describe("WaterSupplyContractSchema", () => {
-  it("parses a valid water supply contract", () => {
-    const result = WaterSupplyContractSchema.parse({
-      coldWaterSupplyType: { value: "DirectFromMain" },
-      meterPresent: { value: true },
-      hotWaterDistributionType: { value: "DeadLeg" },
-    });
-    expect(result.coldWaterSupplyType.value).toBe("DirectFromMain");
-    expect(result.meterPresent.value).toBe(true);
-  });
-
-  it("accepts pressure data", () => {
-    const withPressure = {
-      coldWaterSupplyType: { value: "DirectFromMain" },
-      meterPresent: { value: true },
-      hotWaterDistributionType: { value: "Instantaneous" },
-      waterPressure: {
-        staticPressureBar: { value: 3.5 },
-        flowRateLPerMin: { value: 15 },
+  it("parses WaterSupplyProfile and MainsRemedyDevice", () => {
+    const parsed = WaterSupplyContractSchema.parse({
+      profile: {
+        id: "00000000-0000-0000-0000-000000000301",
+        staticPressureBar: { value: 3 },
+        dynamicPressureBar: { value: 1.2 },
+        peakFlowLPerMin: { value: 18 },
+        sharedMain: { value: true },
+        incomingMaterial: { value: "Copper" },
+        incomingDiameterMm: { value: 22 },
+        prvPresent: { value: false },
       },
-    };
-    const result = WaterSupplyContractSchema.parse(withPressure);
-    expect(result.waterPressure?.staticPressureBar?.value).toBe(3.5);
-  });
-});
+      mainsRemedyDevices: [
+        {
+          id: "00000000-0000-0000-0000-000000000302",
+          type: "BoosterPump",
+          enabled: { value: true },
+        },
+      ],
+    });
 
-describe("WaterSupplyContractJsonSchema", () => {
-  it("is an object", () => {
-    expect(typeof WaterSupplyContractJsonSchema).toBe("object");
+    expect(parsed.profile.peakFlowLPerMin.value).toBe(18);
   });
 });

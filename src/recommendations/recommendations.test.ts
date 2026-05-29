@@ -1,35 +1,42 @@
-import {
-  RecommendationsContractSchema,
-  RecommendationsContractJsonSchema,
-} from "./recommendations";
+import { RecommendationsContractSchema } from "./index";
 
 describe("RecommendationsContractSchema", () => {
-  it("parses empty recommendations", () => {
-    const result = RecommendationsContractSchema.parse({ recommendations: [] });
-    expect(result.recommendations).toHaveLength(0);
-  });
-
-  it("parses a recommendation item", () => {
-    const result = RecommendationsContractSchema.parse({
+  it("parses placeholder-only recommendation entities", () => {
+    const parsed = RecommendationsContractSchema.parse({
       recommendations: [
         {
-          id: "00000000-0000-0000-0000-000000000001",
-          category: "HeatSourceUpgrade",
-          title: "Install ASHP",
-          description: "Replace gas boiler with ASHP",
-          priority: "MediumTerm",
-          estimatedCostGbp: { value: 10000 },
-          estimatedAnnualSavingGbp: { value: 300 },
+          id: "00000000-0000-0000-0000-000000000901",
+          title: "RecommendationV1 placeholder",
+          placeholder: true,
+        },
+      ],
+      options: [
+        {
+          id: "00000000-0000-0000-0000-000000000902",
+          recommendationId: "00000000-0000-0000-0000-000000000901",
+          label: "OptionV1 placeholder",
+          placeholder: true,
+        },
+      ],
+      tradeOffs: [
+        {
+          id: "00000000-0000-0000-0000-000000000903",
+          optionId: "00000000-0000-0000-0000-000000000902",
+          dimension: "Cost",
+          direction: "Neutral",
+          placeholder: true,
+        },
+      ],
+      pathwayRecommendations: [
+        {
+          id: "00000000-0000-0000-0000-000000000904",
+          pathwayNodeId: "00000000-0000-0000-0000-000000000905",
+          recommendationId: "00000000-0000-0000-0000-000000000901",
+          placeholder: true,
         },
       ],
     });
-    expect(result.recommendations[0].category).toBe("HeatSourceUpgrade");
-    expect(result.recommendations[0].estimatedCostGbp?.value).toBe(10000);
-  });
-});
 
-describe("RecommendationsContractJsonSchema", () => {
-  it("is an object", () => {
-    expect(typeof RecommendationsContractJsonSchema).toBe("object");
+    expect(parsed.recommendations[0].placeholder).toBe(true);
   });
 });
