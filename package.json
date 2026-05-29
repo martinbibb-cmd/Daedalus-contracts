@@ -1,0 +1,37 @@
+{
+  "name": "@atlas/contracts-daedalus",
+  "version": "1.1.0",
+  "description": "Atlas Daedalus – canonical shared contracts, schemas, validation, provenance and fixtures",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "export:schemas": "ts-node scripts/exportSchemas.ts",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": [
+    "atlas",
+    "daedalus",
+    "contracts",
+    "schemas",
+    "validation"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.22.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.5",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
