@@ -116,6 +116,21 @@ export const FIX_001_OpenVentedRegular: SurveyFixtureV1_1 = {
     },
     contractVersion: "1.1.0",
   },
+  airflow: {
+    ventilationStrategy: { value: "IntermittentExtract" },
+    trickleVents: { value: "Present" },
+    extractFans: [
+      {
+        id: "00000001-0000-0000-0000-000000000350",
+        location: "Bathroom",
+        ratedFlowRateM3PerH: { value: 54 },
+        humidistat: { value: true },
+        condition: { value: "Good" },
+      },
+    ],
+    purgeVentilationPossible: { value: true },
+    contractVersion: "1.1.0",
+  },
   waterSupply: {
     profile: {
       id: "00000001-0000-0000-0000-000000000400",
@@ -154,6 +169,37 @@ export const FIX_001_OpenVentedRegular: SurveyFixtureV1_1 = {
     ],
     contractVersion: "1.1.0",
   },
+  occupancy: {
+    numberOfOccupants: { value: 3 },
+    occupancyPattern: { value: "FullTimeOccupied" },
+    vulnerableOccupants: { value: false },
+    accessNotes: "Standard daytime access arrangement",
+    contractVersion: "1.1.0",
+  },
+  constraints: {
+    constraints: [
+      {
+        id: "00000001-0000-0000-0000-000000000550",
+        type: "NarrowAccess",
+        description: { value: "Rear service passage is restricted to 800mm width" },
+        severity: { value: "Minor" },
+      },
+    ],
+    contractVersion: "1.1.0",
+  },
+  risks: {
+    risks: [
+      {
+        id: "00000001-0000-0000-0000-000000000560",
+        category: "InadequateVentilation",
+        description: { value: "Historic condensation noted near bathroom extract location" },
+        severity: { value: "Low" },
+        evidenceIds: ["00000001-0000-0000-0000-000000000750"],
+        immediateActionRequired: { value: false },
+      },
+    ],
+    contractVersion: "1.1.0",
+  },
   serviceability: {
     serviceHatches: [
       {
@@ -186,6 +232,21 @@ export const FIX_001_OpenVentedRegular: SurveyFixtureV1_1 = {
     },
     microGenerators: [],
     contractVersion: "1.1.0",
+  },
+  evidence: {
+    surveyId: "00000001-0000-0000-0000-000000000740",
+    items: [
+      {
+        id: "00000001-0000-0000-0000-000000000750",
+        type: "Photograph",
+        label: "Bathroom extract fan",
+        description: "Reference photo of existing intermittent extract fan",
+        capturedAt: "2026-01-15T10:00:00.000Z",
+        capturedBy: "Atlas Surveyor",
+        uri: "https://example.com/evidence/00000001-0000-0000-0000-000000000750",
+        tags: ["bathroom", "ventilation"],
+      },
+    ],
   },
   timeline: {
     nodes: [
