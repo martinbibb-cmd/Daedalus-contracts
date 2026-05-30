@@ -39,28 +39,6 @@ import {
   validateV11CorePayload,
 } from "./validators";
 
-export const SurveyFixtureSchema: z.ZodType<SurveyFixtureV1_1, z.ZodTypeDef, any> = z.object({
-  fixtureId: z.string(),
-  fixtureName: z.string(),
-  description: z.string().optional(),
-  property: PropertyContractSchema,
-  fabric: FabricContractSchema,
-  systemComponents: SystemComponentsContractSchema,
-  hydraulics: HydraulicsContractSchema,
-  airflow: AirflowContractSchema,
-  waterSupply: WaterSupplyContractSchema,
-  controls: ControlsContractSchema,
-  occupancy: OccupancyContractSchema,
-  constraints: ConstraintsContractSchema,
-  risks: RisksContractSchema,
-  serviceability: ServiceabilityContractSchema,
-  electrical: ElectricalContractSchema,
-  evidence: EvidencePackSchema,
-  timeline: TimelineContractSchema,
-  recommendations: RecommendationsContractSchema,
-  optionalMetadata: OptionalMetadataSchema.optional(),
-}).strict();
-
 export interface SurveyFixtureV1_1 {
   fixtureId: string;
   fixtureName: string;
@@ -84,12 +62,36 @@ export interface SurveyFixtureV1_1 {
 }
 export type SurveyFixture = SurveyFixtureV1_1;
 
+const SurveyFixtureShape: z.ZodRawShape = {
+  fixtureId: z.string(),
+  fixtureName: z.string(),
+  description: z.string().optional(),
+  property: PropertyContractSchema,
+  fabric: FabricContractSchema,
+  systemComponents: SystemComponentsContractSchema,
+  hydraulics: HydraulicsContractSchema,
+  airflow: AirflowContractSchema,
+  waterSupply: WaterSupplyContractSchema,
+  controls: ControlsContractSchema,
+  occupancy: OccupancyContractSchema,
+  constraints: ConstraintsContractSchema,
+  risks: RisksContractSchema,
+  serviceability: ServiceabilityContractSchema,
+  electrical: ElectricalContractSchema,
+  evidence: EvidencePackSchema,
+  timeline: TimelineContractSchema,
+  recommendations: RecommendationsContractSchema,
+  optionalMetadata: OptionalMetadataSchema.optional(),
+};
+
+export const SurveyFixtureSchema = z.object(SurveyFixtureShape).strict();
+
 export const SurveyFixtureJsonSchema = zodToJsonSchema(SurveyFixtureSchema, {
   name: "SurveyFixture",
 });
 
 export function loadFixture(fixture: SurveyFixtureV1_1): SurveyFixtureV1_1 {
-  const loaded = SurveyFixtureSchema.parse(fixture);
+  const loaded = SurveyFixtureSchema.parse(fixture) as SurveyFixtureV1_1;
   validateV11CorePayload(loaded);
   validateOptionalMetadataIsolation(loaded);
   validateHydraulicsClosedLoop(loaded);
