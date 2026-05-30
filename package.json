@@ -11,7 +11,7 @@
     "build": "tsc",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "export:schemas": "ts-node scripts/exportSchemas.ts",
+    "export:schemas": "NODE_OPTIONS=--max-old-space-size=8192 ts-node --transpile-only scripts/exportSchemas.ts",
     "lint": "tsc --noEmit"
   },
   "keywords": [
