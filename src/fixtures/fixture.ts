@@ -4,10 +4,15 @@ import { PropertyContractSchema } from "../property";
 import { FabricContractSchema } from "../fabric";
 import { SystemComponentsContractSchema } from "../systemComponents";
 import { HydraulicsContractSchema } from "../hydraulics";
+import { AirflowContractSchema } from "../airflow";
 import { WaterSupplyContractSchema } from "../waterSupply";
 import { ControlsContractSchema } from "../controls";
+import { OccupancyContractSchema } from "../occupancy";
+import { ConstraintsContractSchema } from "../constraints";
+import { RisksContractSchema } from "../risks";
 import { ServiceabilityContractSchema } from "../serviceability";
 import { ElectricalContractSchema } from "../electrical";
+import { EvidencePackSchema } from "../evidence";
 import { TimelineContractSchema } from "../timeline";
 import { RecommendationsContractSchema } from "../recommendations";
 import { OptionalMetadataSchema } from "../optionalMetadata";
@@ -26,14 +31,19 @@ export const SurveyFixtureSchema = z.object({
   fabric: FabricContractSchema,
   systemComponents: SystemComponentsContractSchema,
   hydraulics: HydraulicsContractSchema,
+  airflow: AirflowContractSchema,
   waterSupply: WaterSupplyContractSchema,
   controls: ControlsContractSchema,
+  occupancy: OccupancyContractSchema,
+  constraints: ConstraintsContractSchema,
+  risks: RisksContractSchema,
   serviceability: ServiceabilityContractSchema,
   electrical: ElectricalContractSchema,
+  evidence: EvidencePackSchema,
   timeline: TimelineContractSchema,
   recommendations: RecommendationsContractSchema,
   optionalMetadata: OptionalMetadataSchema.optional(),
-});
+}).strict();
 
 export type SurveyFixtureV1_1 = z.infer<typeof SurveyFixtureSchema>;
 export type SurveyFixture = SurveyFixtureV1_1;

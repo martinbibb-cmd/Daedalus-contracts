@@ -30,6 +30,15 @@ describe("SurveyFixtureSchema", () => {
 });
 
 describe("V1.1 fixture constraints", () => {
+  it("validates all fifteen V1.1 domains as top-level payload", () => {
+    const fix = loadFixture(FIX_001_OpenVentedRegular);
+    expect(fix.airflow.extractFans.length).toBeGreaterThan(0);
+    expect(fix.occupancy.occupancyPattern.value).toBe("FullTimeOccupied");
+    expect(fix.constraints.constraints.length).toBeGreaterThan(0);
+    expect(fix.risks.risks.length).toBeGreaterThan(0);
+    expect(fix.evidence.items.length).toBeGreaterThan(0);
+  });
+
   it("uses Site -> Structure -> Space", () => {
     const fix = loadFixture(FIX_001_OpenVentedRegular);
     expect(fix.property.site.structures[0].spaces.length).toBeGreaterThan(0);
