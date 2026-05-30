@@ -1,4 +1,6 @@
 export * from "./fixture";
+export * from "./composition/order";
+export * from "./validators";
 export * from "./FIX_001_OpenVentedRegular";
 export * from "./FIX_002_SystemUnvented";
 export * from "./FIX_003_CombiFlat";

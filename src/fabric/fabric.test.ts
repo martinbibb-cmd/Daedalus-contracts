@@ -1,64 +1,27 @@
-import {
-  FabricContractSchema,
-  FabricContractJsonSchema,
-  WallSchema,
-  RoofSchema,
-  FloorSchema,
-  WindowsSchema,
-} from "./fabric";
-
-const validFabric = {
-  walls: [
-    {
-      constructionType: { value: "CavityUnfilled" },
-      uValueWPerM2K: { value: 1.6 },
-    },
-  ],
-  roof: {
-    roofType: { value: "PitchedTile" },
-    insulationThicknessMm: { value: 100 },
-  },
-  floors: [{ level: 0, floorType: { value: "SuspendedTimber" } }],
-  windows: { glazingType: { value: "DoubleGlazed" } },
-};
-
-describe("WallSchema", () => {
-  it("parses wall with provenance", () => {
-    const wall = WallSchema.parse({
-      constructionType: {
-        value: "SolidBrick",
-        provenance: { level: "PhotoEvidenced" },
-      },
-    });
-    expect(wall.constructionType.provenance?.level).toBe("PhotoEvidenced");
-  });
-});
-
-describe("RoofSchema", () => {
-  it("parses roof", () => {
-    const roof = RoofSchema.parse({ roofType: { value: "Flat" } });
-    expect(roof.roofType.value).toBe("Flat");
-  });
-});
+import { FabricContractSchema } from "./index";
 
 describe("FabricContractSchema", () => {
-  it("parses a valid fabric contract", () => {
-    const result = FabricContractSchema.parse(validFabric);
-    expect(result.walls).toHaveLength(1);
-    expect(result.contractVersion).toBe("1.1.0");
-  });
+  it("parses FabricElement with MaterialLayer stack", () => {
+    const parsed = FabricContractSchema.parse({
+      elements: [
+        {
+          id: "00000000-0000-0000-0000-000000000101",
+          structureId: "00000000-0000-0000-0000-000000000102",
+          type: "Wall",
+          orientation: { value: "North" },
+          surfaceAreaM2: { value: 10 },
+          layerStack: [
+            {
+              id: "00000000-0000-0000-0000-000000000103",
+              name: "Layer",
+              material: "Brick",
+              thicknessMm: { value: 100 },
+            },
+          ],
+        },
+      ],
+    });
 
-  it("rejects invalid wall construction type", () => {
-    const bad = {
-      ...validFabric,
-      walls: [{ constructionType: { value: "Mud" } }],
-    };
-    expect(() => FabricContractSchema.parse(bad)).toThrow();
-  });
-});
-
-describe("FabricContractJsonSchema", () => {
-  it("exports a JSON schema object", () => {
-    expect(typeof FabricContractJsonSchema).toBe("object");
+    expect(parsed.elements[0].layerStack.length).toBe(1);
   });
 });

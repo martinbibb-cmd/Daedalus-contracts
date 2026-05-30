@@ -1,49 +1,34 @@
-import {
-  HydraulicsContractSchema,
-  HydraulicsContractJsonSchema,
-  HeatingSystemTypeSchema,
-  PipeMaterialSchema,
-} from "./hydraulics";
-
-const validHydraulics = {
-  systemType: { value: "OpenVentedRegular" },
-  pipework: { primaryMaterial: { value: "Copper" } },
-  systemPressure: { expansionType: { value: "OpenVentedFAndETank" } },
-};
-
-describe("HeatingSystemTypeSchema", () => {
-  it("accepts all defined types", () => {
-    ["Combi", "ASHP", "GSHP", "DistrictHeating"].forEach((t) =>
-      expect(() => HeatingSystemTypeSchema.parse(t)).not.toThrow()
-    );
-  });
-});
+import { HydraulicsContractSchema } from "./index";
 
 describe("HydraulicsContractSchema", () => {
-  it("parses valid hydraulics contract", () => {
-    const result = HydraulicsContractSchema.parse(validHydraulics);
-    expect(result.systemType.value).toBe("OpenVentedRegular");
-    expect(result.contractVersion).toBe("1.1.0");
-  });
-
-  it("parses sealed system with pressure data", () => {
-    const sealed = {
-      ...validHydraulics,
-      systemType: { value: "SystemBoilerUnvented" },
-      systemPressure: {
-        expansionType: { value: "SealedExpansionVessel" },
-        staticPressureBar: { value: 1.2 },
-        pressureReliefValveFitted: { value: true },
-        pressureReliefValveBarSetting: { value: 3.0 },
+  it("accepts closed loop network with resolvable ports", () => {
+    const parsed = HydraulicsContractSchema.parse({
+      network: {
+        id: "00000000-0000-0000-0000-000000000201",
+        ports: [
+          { id: "00000000-0000-0000-0000-000000000202", componentId: "00000000-0000-0000-0000-000000000209", role: "Flow", medium: "Water" },
+          { id: "00000000-0000-0000-0000-000000000203", componentId: "00000000-0000-0000-0000-000000000209", role: "Return", medium: "Water" },
+          { id: "00000000-0000-0000-0000-000000000206", componentId: "00000000-0000-0000-0000-000000000209", role: "Outlet", medium: "Water" },
+        ],
+        pipeSegments: [
+          { id: "00000000-0000-0000-0000-000000000204", fromPortId: "00000000-0000-0000-0000-000000000202", toPortId: "00000000-0000-0000-0000-000000000203" },
+          { id: "00000000-0000-0000-0000-000000000207", fromPortId: "00000000-0000-0000-0000-000000000203", toPortId: "00000000-0000-0000-0000-000000000206" },
+        ],
+        loops: [
+          {
+            id: "00000000-0000-0000-0000-000000000205",
+            name: "Loop",
+            portSequence: [
+              "00000000-0000-0000-0000-000000000202",
+              "00000000-0000-0000-0000-000000000203",
+              "00000000-0000-0000-0000-000000000206",
+              "00000000-0000-0000-0000-000000000202",
+            ],
+          },
+        ],
       },
-    };
-    const result = HydraulicsContractSchema.parse(sealed);
-    expect(result.systemPressure.staticPressureBar?.value).toBe(1.2);
-  });
-});
+    });
 
-describe("HydraulicsContractJsonSchema", () => {
-  it("is an object", () => {
-    expect(typeof HydraulicsContractJsonSchema).toBe("object");
+    expect(parsed.network.loops[0].portSequence[0]).toBe(parsed.network.loops[0].portSequence[3]);
   });
 });

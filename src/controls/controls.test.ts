@@ -1,37 +1,30 @@
-import { ControlsContractSchema, ControlsContractJsonSchema } from "./controls";
-
-const validControls = {
-  thermostat: {
-    id: "00000000-0000-0000-0000-000000000001",
-    type: { value: "SmartThermostat" },
-  },
-  programmer: {
-    id: "00000000-0000-0000-0000-000000000002",
-    type: { value: "IntegratedWithStat" },
-  },
-  trvCoverage: { value: "AllRooms" },
-};
+import { ControlsContractSchema } from "./index";
 
 describe("ControlsContractSchema", () => {
-  it("parses valid controls contract", () => {
-    const result = ControlsContractSchema.parse(validControls);
-    expect(result.thermostat.type.value).toBe("SmartThermostat");
-    expect(result.contractVersion).toBe("1.1.0");
-  });
+  it("parses ControlSystem with ControlZone and ControlDevice", () => {
+    const parsed = ControlsContractSchema.parse({
+      systems: [
+        {
+          id: "00000000-0000-0000-0000-000000000401",
+          name: "Main",
+          devices: [
+            {
+              id: "00000000-0000-0000-0000-000000000402",
+              type: "Thermostat",
+              targetZoneId: "00000000-0000-0000-0000-000000000403",
+            },
+          ],
+          zones: [
+            {
+              id: "00000000-0000-0000-0000-000000000403",
+              name: "Zone 1",
+              spaceIds: ["00000000-0000-0000-0000-000000000404"],
+            },
+          ],
+        },
+      ],
+    });
 
-  it("accepts optional fields", () => {
-    const withOptional = {
-      ...validControls,
-      cylinderThermostat: { value: true },
-      boilerInterlock: { value: true },
-    };
-    const result = ControlsContractSchema.parse(withOptional);
-    expect(result.boilerInterlock?.value).toBe(true);
-  });
-});
-
-describe("ControlsContractJsonSchema", () => {
-  it("exports JSON schema", () => {
-    expect(typeof ControlsContractJsonSchema).toBe("object");
+    expect(parsed.systems[0].zones[0].spaceIds.length).toBe(1);
   });
 });

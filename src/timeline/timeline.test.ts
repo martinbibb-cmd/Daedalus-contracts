@@ -1,35 +1,31 @@
-import { TimelineContractSchema, TimelineContractJsonSchema } from "./timeline";
+import { TimelineContractSchema } from "./index";
 
 describe("TimelineContractSchema", () => {
-  it("parses empty timeline", () => {
-    const result = TimelineContractSchema.parse({ events: [] });
-    expect(result.events).toHaveLength(0);
-    expect(result.contractVersion).toBe("1.1.0");
-  });
-
-  it("parses timeline with events", () => {
-    const result = TimelineContractSchema.parse({
-      events: [
+  it("parses PathwayNode PathwayTransition and EquivalentPath", () => {
+    const parsed = TimelineContractSchema.parse({
+      nodes: [
+        { id: "00000000-0000-0000-0000-000000000801", name: "N1", stage: "Baseline" },
+        { id: "00000000-0000-0000-0000-000000000802", name: "N2", stage: "Intervention" },
+      ],
+      transitions: [
         {
-          id: "00000000-0000-0000-0000-000000000001",
-          eventType: "Service",
-          component: "Boiler",
-          date: { value: "2023-11-01" },
+          id: "00000000-0000-0000-0000-000000000803",
+          fromNodeId: "00000000-0000-0000-0000-000000000801",
+          toNodeId: "00000000-0000-0000-0000-000000000802",
         },
+      ],
+      equivalentPaths: [
         {
-          id: "00000000-0000-0000-0000-000000000002",
-          eventType: "Installation",
-          date: { value: "2010-01-15" },
+          id: "00000000-0000-0000-0000-000000000804",
+          name: "Path A",
+          nodeIds: [
+            "00000000-0000-0000-0000-000000000801",
+            "00000000-0000-0000-0000-000000000802",
+          ],
         },
       ],
     });
-    expect(result.events).toHaveLength(2);
-    expect(result.events[0].eventType).toBe("Service");
-  });
-});
 
-describe("TimelineContractJsonSchema", () => {
-  it("is an object", () => {
-    expect(typeof TimelineContractJsonSchema).toBe("object");
+    expect(parsed.transitions[0].fromNodeId).toBe("00000000-0000-0000-0000-000000000801");
   });
 });

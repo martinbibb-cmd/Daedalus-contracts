@@ -1,36 +1,31 @@
-import {
-  ServiceabilityContractSchema,
-  ServiceabilityContractJsonSchema,
-} from "./serviceability";
+import { ServiceabilityContractSchema } from "./index";
 
 describe("ServiceabilityContractSchema", () => {
-  it("parses minimal serviceability contract", () => {
-    const result = ServiceabilityContractSchema.parse({
-      overallRating: { value: "Good" },
-      items: [],
-    });
-    expect(result.overallRating.value).toBe("Good");
-    expect(result.contractVersion).toBe("1.1.0");
-  });
-
-  it("parses with serviceability items", () => {
-    const result = ServiceabilityContractSchema.parse({
-      overallRating: { value: "Adequate" },
-      items: [
+  it("parses ServiceHatch AccessPathway and ClearanceEnvelope", () => {
+    const parsed = ServiceabilityContractSchema.parse({
+      serviceHatches: [
         {
-          component: "Boiler",
-          rating: { value: "Adequate" },
-          actionRequired: { value: false },
-          estimatedRemainingLifeYears: { value: 5 },
+          id: "00000000-0000-0000-0000-000000000601",
+          componentId: "00000000-0000-0000-0000-000000000602",
+          location: "Cupboard",
+        },
+      ],
+      accessPathways: [
+        {
+          id: "00000000-0000-0000-0000-000000000603",
+          componentId: "00000000-0000-0000-0000-000000000602",
+          routeDescription: "Hallway",
+        },
+      ],
+      clearanceEnvelopes: [
+        {
+          id: "00000000-0000-0000-0000-000000000604",
+          componentId: "00000000-0000-0000-0000-000000000602",
+          frontalClearanceMm: { value: 500 },
         },
       ],
     });
-    expect(result.items[0].component).toBe("Boiler");
-  });
-});
 
-describe("ServiceabilityContractJsonSchema", () => {
-  it("is an object", () => {
-    expect(typeof ServiceabilityContractJsonSchema).toBe("object");
+    expect(parsed.clearanceEnvelopes[0].frontalClearanceMm.value).toBe(500);
   });
 });
