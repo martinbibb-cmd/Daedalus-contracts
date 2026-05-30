@@ -1,7 +1,23 @@
 import { SurveyFixtureV1_1 } from "../fixture";
 
 const optionalMetadataKeys = ["address", "epcRating", "tenure"];
-const forbiddenOptionalMetadataKeys = ["airflow", "occupancy", "constraints", "risks", "evidence"];
+const forbiddenOptionalMetadataKeys = [
+  "property",
+  "fabric",
+  "systemComponents",
+  "hydraulics",
+  "airflow",
+  "waterSupply",
+  "controls",
+  "occupancy",
+  "constraints",
+  "risks",
+  "serviceability",
+  "electrical",
+  "evidence",
+  "timeline",
+  "recommendations",
+];
 
 export function validateOptionalMetadataIsolation(fixture: SurveyFixtureV1_1): void {
   optionalMetadataKeys.forEach((key) => {
