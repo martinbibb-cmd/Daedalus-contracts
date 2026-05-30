@@ -1,9 +1,10 @@
 import { RecommendationsContractSchema } from "../../recommendations";
 import { SurveyFixtureV1_1 } from "../fixture";
 
+const placeholderWord = /\bplaceholder\b/i;
+
 export function validateRecommendationPlaceholders(fixture: SurveyFixtureV1_1): void {
   const parsed = RecommendationsContractSchema.parse(fixture.recommendations);
-  const placeholderWord = /\bplaceholder\b/i;
 
   parsed.recommendations.forEach((recommendation, index) => {
     if (!recommendation.placeholder || !placeholderWord.test(recommendation.title)) {
