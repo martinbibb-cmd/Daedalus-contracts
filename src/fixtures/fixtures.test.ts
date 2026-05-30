@@ -98,7 +98,12 @@ describe("V1.1 fixture constraints", () => {
 
   it("rejects hydraulics network ports not present in ComponentPorts", () => {
     const invalid = cloneFixture(FIX_001_OpenVentedRegular);
-    invalid.hydraulics.network.ports[0].id = "00000001-0000-0000-0000-000000009999";
+    invalid.hydraulics.network.ports.push({
+      id: "00000001-0000-0000-0000-000000009999",
+      componentId: "00000001-0000-0000-0000-000000000020",
+      role: "Flow",
+      medium: "Water",
+    });
     expect(() => loadFixture(invalid)).toThrow(
       "is not declared in systemComponents.componentPorts"
     );
