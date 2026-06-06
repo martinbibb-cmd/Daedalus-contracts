@@ -7,6 +7,9 @@ import {
   SpatialPlacementSchema,
   DaedalusPackageJsonSchema,
   UnifiedPropertyTwinJsonSchema,
+  validateDaedalusPackage,
+  validateEvidenceReferences,
+  validateTwinIntegrity,
   type DaedalusPackage,
 } from "./twin";
 
@@ -317,6 +320,117 @@ describe("JSON schema exports", () => {
     forbiddenBoundaryFields.forEach((field) => {
       expect(packageFields).not.toContain(field);
       expect(twinFields).not.toContain(field);
+    });
+  });
+
+  describe("Daedalus package contract validation", () => {
+    it("passes for a valid sample package", () => {
+      const result = validateDaedalusPackage(samplePackage);
+      expect(result.valid).toBe(true);
+      expect(result.issues).toEqual([]);
+    });
+
+    it("fails when a system asset references missing evidence", () => {
+      const invalidPackage: DaedalusPackage = {
+        ...samplePackage,
+        systemTwin: {
+          ...samplePackage.systemTwin,
+          assets: [
+            {
+              ...samplePackage.systemTwin.assets[0],
+              evidenceIDs: ["00000000-0000-0000-0000-000000000999"],
+            },
+          ],
+        },
+      };
+
+      const issues = validateEvidenceReferences(invalidPackage);
+      expect(issues).toHaveLength(1);
+      expect(issues[0]).toMatchObject({
+        path: "systemTwin.assets[0].evidenceIDs[0]",
+        code: "evidence.reference.missing",
+        severity: "error",
+      });
+    });
+
+    it("fails when system asset IDs are duplicated", () => {
+      const duplicatedAssetId = samplePackage.systemTwin.assets[0].id;
+      const invalidPackage: DaedalusPackage = {
+        ...samplePackage,
+        systemTwin: {
+          ...samplePackage.systemTwin,
+          assets: [
+            samplePackage.systemTwin.assets[0],
+            {
+              ...samplePackage.systemTwin.assets[1],
+              id: duplicatedAssetId,
+            },
+          ],
+        },
+      };
+
+      const issues = validateTwinIntegrity(invalidPackage);
+      expect(issues.some((issue) => issue.code === "systemAsset.id.duplicate")).toBe(
+        true
+      );
+    });
+
+    it("fails when evidence IDs are duplicated", () => {
+      const duplicatedEvidenceId = samplePackage.evidence[0].id;
+      const invalidPackage: DaedalusPackage = {
+        ...samplePackage,
+        evidence: [
+          samplePackage.evidence[0],
+          {
+            ...samplePackage.evidence[0],
+            id: duplicatedEvidenceId,
+          },
+        ],
+      };
+
+      const issues = validateTwinIntegrity(invalidPackage);
+      expect(issues.some((issue) => issue.code === "twinEvidence.id.duplicate")).toBe(
+        true
+      );
+    });
+
+    it("fails through schema parsing for arbitrary asset types", () => {
+      const invalidPackage = {
+        ...samplePackage,
+        systemTwin: {
+          ...samplePackage.systemTwin,
+          assets: [
+            {
+              ...samplePackage.systemTwin.assets[0],
+              assetType: "HeatPump",
+            },
+          ],
+        },
+      };
+
+      const result = validateDaedalusPackage(invalidPackage);
+      expect(result.valid).toBe(false);
+      expect(result.issues.some((issue) => issue.path.includes("assetType"))).toBe(
+        true
+      );
+    });
+
+    it("returns structured issues from package validation", () => {
+      const invalidPackage = {
+        ...samplePackage,
+        packageID: "",
+        createdAt: "not-a-date",
+      };
+
+      const result = validateDaedalusPackage(invalidPackage);
+      expect(result.valid).toBe(false);
+      expect(result.issues.length).toBeGreaterThan(0);
+      expect(result.issues[0]).toMatchObject({
+        path: expect.any(String),
+        code: expect.any(String),
+        message: expect.any(String),
+        severity: "error",
+      });
     });
   });
 });

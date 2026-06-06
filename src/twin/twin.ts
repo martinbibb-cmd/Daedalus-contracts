@@ -189,3 +189,150 @@ export const UnifiedPropertyTwinJsonSchema = zodToJsonSchema(
   UnifiedPropertyTwinSchema,
   { name: "UnifiedPropertyTwin" }
 );
+
+export type PackageValidationIssue = {
+  path: string;
+  code: string;
+  message: string;
+  severity: "error" | "warning";
+};
+
+export type PackageValidationResult = {
+  valid: boolean;
+  issues: PackageValidationIssue[];
+};
+
+const zodIssuePathToString = (path: (string | number)[]): string => {
+  if (path.length === 0) {
+    return "$";
+  }
+
+  return path.reduce((acc, segment) => {
+    if (typeof segment === "number") {
+      return `${acc}[${segment}]`;
+    }
+    return acc ? `${acc}.${segment}` : segment;
+  }, "");
+};
+
+const issueFromZodIssue = (issue: z.ZodIssue): PackageValidationIssue => ({
+  path: zodIssuePathToString(issue.path),
+  code: issue.code,
+  message: issue.message,
+  severity: "error",
+});
+
+const duplicateIdIssues = (
+  ids: string[],
+  pathPrefix: string,
+  code: string,
+  message: string
+): PackageValidationIssue[] => {
+  const seen = new Set<string>();
+  const issues: PackageValidationIssue[] = [];
+
+  ids.forEach((id, index) => {
+    if (seen.has(id)) {
+      issues.push({
+        path: `${pathPrefix}[${index}].id`,
+        code,
+        message: `${message}: ${id}`,
+        severity: "error",
+      });
+      return;
+    }
+    seen.add(id);
+  });
+
+  return issues;
+};
+
+export const validateEvidenceReferences = (
+  packageData: DaedalusPackage
+): PackageValidationIssue[] => {
+  const evidenceIDs = new Set(packageData.evidence.map((item) => item.id));
+  const issues: PackageValidationIssue[] = [];
+
+  packageData.systemTwin.assets.forEach((asset, assetIndex) => {
+    asset.evidenceIDs.forEach((evidenceID, evidenceIndex) => {
+      if (!evidenceIDs.has(evidenceID)) {
+        issues.push({
+          path: `systemTwin.assets[${assetIndex}].evidenceIDs[${evidenceIndex}]`,
+          code: "evidence.reference.missing",
+          message: `Evidence ID does not exist in package evidence array: ${evidenceID}`,
+          severity: "error",
+        });
+      }
+    });
+  });
+
+  return issues;
+};
+
+export const validateTwinIntegrity = (
+  packageData: DaedalusPackage
+): PackageValidationIssue[] => {
+  const issues: PackageValidationIssue[] = [];
+
+  issues.push(
+    ...duplicateIdIssues(
+      packageData.houseTwin.areas.map((area) => area.id),
+      "houseTwin.areas",
+      "spatialArea.id.duplicate",
+      "Duplicate SpatialArea.id"
+    )
+  );
+
+  issues.push(
+    ...duplicateIdIssues(
+      packageData.systemTwin.assets.map((asset) => asset.id),
+      "systemTwin.assets",
+      "systemAsset.id.duplicate",
+      "Duplicate SystemAsset.id"
+    )
+  );
+
+  issues.push(
+    ...duplicateIdIssues(
+      packageData.evidence.map((evidence) => evidence.id),
+      "evidence",
+      "twinEvidence.id.duplicate",
+      "Duplicate TwinEvidence.id"
+    )
+  );
+
+  const unifiedTwinResult = UnifiedPropertyTwinSchema.safeParse({
+    house: packageData.houseTwin,
+    system: packageData.systemTwin,
+    home: packageData.homeTwin,
+  });
+
+  if (!unifiedTwinResult.success) {
+    issues.push(...unifiedTwinResult.error.issues.map(issueFromZodIssue));
+  }
+
+  return issues;
+};
+
+export const validateDaedalusPackage = (
+  packageData: unknown
+): PackageValidationResult => {
+  const parsedPackage = DaedalusPackageSchema.safeParse(packageData);
+
+  if (!parsedPackage.success) {
+    return {
+      valid: false,
+      issues: parsedPackage.error.issues.map(issueFromZodIssue),
+    };
+  }
+
+  const issues = [
+    ...validateEvidenceReferences(parsedPackage.data),
+    ...validateTwinIntegrity(parsedPackage.data),
+  ];
+
+  return {
+    valid: issues.length === 0,
+    issues,
+  };
+};
