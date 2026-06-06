@@ -207,12 +207,18 @@ const zodIssuePathToString = (path: (string | number)[]): string => {
     return "$";
   }
 
-  return path.reduce((acc, segment) => {
+  let formattedPath = "";
+
+  path.forEach((segment) => {
     if (typeof segment === "number") {
-      return `${acc}[${segment}]`;
+      formattedPath = `${formattedPath}[${segment}]`;
+      return;
     }
-    return acc ? `${acc}.${segment}` : segment;
-  }, "");
+
+    formattedPath = formattedPath ? `${formattedPath}.${segment}` : segment;
+  });
+
+  return formattedPath;
 };
 
 const issueFromZodIssue = (issue: z.ZodIssue): PackageValidationIssue => ({
