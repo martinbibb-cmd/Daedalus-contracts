@@ -207,18 +207,17 @@ const zodIssuePathToString = (path: (string | number)[]): string => {
     return "$";
   }
 
-  let formattedPath = "";
+  const segments: string[] = path.map((segment): string =>
+    typeof segment === "number" ? `[${segment}]` : segment
+  );
 
-  path.forEach((segment) => {
-    if (typeof segment === "number") {
-      formattedPath = `${formattedPath}[${segment}]`;
-      return;
+  return segments.reduce((formattedPath, segment) => {
+    if (segment.startsWith("[")) {
+      return `${formattedPath}${segment}`;
     }
 
-    formattedPath = formattedPath ? `${formattedPath}.${segment}` : segment;
-  });
-
-  return formattedPath;
+    return formattedPath ? `${formattedPath}.${segment}` : segment;
+  }, "");
 };
 
 const issueFromZodIssue = (issue: z.ZodIssue): PackageValidationIssue => ({
@@ -234,11 +233,11 @@ const duplicateIdIssues = (
   code: string,
   message: string
 ): PackageValidationIssue[] => {
-  const seen = new Set<string>();
+  const seenIds = new Set<string>();
   const issues: PackageValidationIssue[] = [];
 
   ids.forEach((id, index) => {
-    if (seen.has(id)) {
+    if (seenIds.has(id)) {
       issues.push({
         path: `${pathPrefix}[${index}].id`,
         code,
@@ -247,7 +246,7 @@ const duplicateIdIssues = (
       });
       return;
     }
-    seen.add(id);
+    seenIds.add(id);
   });
 
   return issues;
