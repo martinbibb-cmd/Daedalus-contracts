@@ -4,6 +4,7 @@ import {
   ConfidenceSchema,
   CaptureStateSchema,
   SystemAssetTypeSchema,
+  SpatialPlacementSchema,
   DaedalusPackageJsonSchema,
   UnifiedPropertyTwinJsonSchema,
   type DaedalusPackage,
@@ -92,12 +93,49 @@ const samplePackage: DaedalusPackage = {
   ],
 };
 
+const forbiddenBoundaryFields = [
+  "recommendation",
+  "suitability",
+  "score",
+  "rank",
+  "price",
+  "simulation",
+];
+
+const collectJsonSchemaPropertyNames = (schema: unknown): string[] => {
+  const names = new Set<string>();
+
+  const visit = (value: unknown): void => {
+    if (Array.isArray(value)) {
+      value.forEach(visit);
+      return;
+    }
+
+    if (!value || typeof value !== "object") {
+      return;
+    }
+
+    const record = value as Record<string, unknown>;
+
+    if (record.properties && typeof record.properties === "object") {
+      Object.keys(record.properties as Record<string, unknown>).forEach((key) =>
+        names.add(key)
+      );
+    }
+
+    Object.values(record).forEach(visit);
+  };
+
+  visit(schema);
+  return [...names];
+};
+
 // ---------------------------------------------------------------------------
 // Confidence enum
 // ---------------------------------------------------------------------------
 
 describe("ConfidenceSchema", () => {
-  it("accepts all constitutional values", () => {
+  it("accepts all constitutional values, including boundary cases", () => {
     const values = ["observed", "approximate", "unknown", "unresolved"] as const;
     values.forEach((v) => expect(ConfidenceSchema.parse(v)).toBe(v));
   });
@@ -149,6 +187,32 @@ describe("SystemAssetTypeSchema", () => {
   it("rejects free-form strings", () => {
     expect(() => SystemAssetTypeSchema.parse("BoilerUnit")).toThrow();
     expect(() => SystemAssetTypeSchema.parse("")).toThrow();
+  });
+});
+
+describe("SpatialPlacementSchema", () => {
+  it("supports evidenceOnly without approximatePosition", () => {
+    expect(
+      SpatialPlacementSchema.parse({
+        captureState: "evidenceOnly",
+        confidence: "unknown",
+      })
+    ).toEqual({
+      captureState: "evidenceOnly",
+      confidence: "unknown",
+    });
+  });
+
+  it("supports roomAttached without anchorID", () => {
+    expect(
+      SpatialPlacementSchema.parse({
+        captureState: "roomAttached",
+        confidence: "approximate",
+      })
+    ).toEqual({
+      captureState: "roomAttached",
+      confidence: "approximate",
+    });
   });
 });
 
@@ -244,5 +308,15 @@ describe("JSON schema exports", () => {
 
   it("exports UnifiedPropertyTwin JSON schema as an object", () => {
     expect(typeof UnifiedPropertyTwinJsonSchema).toBe("object");
+  });
+
+  it("keeps forbidden recommendation and simulation fields out of contract schemas", () => {
+    const packageFields = collectJsonSchemaPropertyNames(DaedalusPackageJsonSchema);
+    const twinFields = collectJsonSchemaPropertyNames(UnifiedPropertyTwinJsonSchema);
+
+    forbiddenBoundaryFields.forEach((field) => {
+      expect(packageFields).not.toContain(field);
+      expect(twinFields).not.toContain(field);
+    });
   });
 });
