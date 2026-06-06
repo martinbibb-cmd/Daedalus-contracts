@@ -135,7 +135,7 @@ const collectJsonSchemaPropertyNames = (schema: unknown): string[] => {
 // ---------------------------------------------------------------------------
 
 describe("ConfidenceSchema", () => {
-  it("accepts all constitutional values, including unknown/approximate/unresolved", () => {
+  it("accepts all constitutional values, including boundary cases", () => {
     const values = ["observed", "approximate", "unknown", "unresolved"] as const;
     values.forEach((v) => expect(ConfidenceSchema.parse(v)).toBe(v));
   });
