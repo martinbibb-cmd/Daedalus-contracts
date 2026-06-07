@@ -97,6 +97,49 @@ export const AbsenceReasonSchema = z.enum([
   "other",
 ]);
 
+export const ServicePointTypeSchema = z.enum([
+  "kitchenTap",
+  "bathTap",
+  "basinTap",
+  "showerMixer",
+  "electricShower",
+  "outsideTap",
+  "washingMachineValve",
+  "cylinderInlet",
+  "other",
+  "unknown",
+]);
+
+export const SupplyTypeSchema = z.enum([
+  "mainsCold",
+  "storedCold",
+  "gravityHot",
+  "mainsHot",
+  "pumpedHot",
+  "mixed",
+  "unknown",
+]);
+
+export const IntendedPressureTypeSchema = z.enum([
+  "mainsPressure",
+  "gravityLowPressure",
+  "pumped",
+  "universal",
+  "unknown",
+]);
+
+export const ObservedIssueSchema = z.enum([
+  "poorFlow",
+  "temperatureFluctuation",
+  "slowBathFill",
+  "noisyOperation",
+  "outletRestrictionSuspected",
+  "mismatchSuspected",
+  "scaledOrRestricted",
+  "noIssueObserved",
+  "unknown",
+]);
+
 export const WaterMeasurementValueSchema = z
   .object({
     name: WaterMeasurementValueNameSchema,
@@ -165,6 +208,20 @@ export const WaterSupplyObservationSchema = z
     }
   });
 
+export const ServicePointObservationSchema = z.object({
+  id: z.string().min(1),
+  areaID: z.string().min(1),
+  servicePointType: ServicePointTypeSchema,
+  supplyType: SupplyTypeSchema,
+  intendedPressureType: IntendedPressureTypeSchema,
+  servedByAssetIDs: z.array(z.string().min(1)).default([]),
+  observedIssues: z.array(ObservedIssueSchema).default([]),
+  evidenceIDs: z.array(z.string().min(1)).default([]),
+  confidence: ConfidenceStateSchema,
+  provenance: DaedalusPackageProvenanceSchema,
+  notes: z.string().optional(),
+});
+
 export const DaedalusPackageObservationSchema = z
   .object({
     observation_id: z.string().min(1),
@@ -201,6 +258,7 @@ export const DaedalusPackageV3Schema = z
     observations: z.array(DaedalusPackageObservationSchema).min(1),
     relationships: z.array(DaedalusPackageRelationshipSchema).default([]),
     waterSupplyObservations: z.array(WaterSupplyObservationSchema).default([]),
+    servicePointObservations: z.array(ServicePointObservationSchema).default([]),
   })
   .superRefine((value, ctx) => {
     const observationIds = new Set<string>();
@@ -259,6 +317,11 @@ export const DaedalusPackageV3Schema = z
         .filter((observation) => observation.tag.toLowerCase().includes("evidence"))
         .map((observation) => observation.observation_id)
     );
+    const areaObservationIds = new Set(
+      value.observations
+        .filter((observation) => observation.tag.toLowerCase() === "area")
+        .map((observation) => observation.observation_id)
+    );
     const waterObservationIds = new Set<string>();
 
     value.waterSupplyObservations?.forEach((observation, observationIndex) => {
@@ -277,6 +340,46 @@ export const DaedalusPackageV3Schema = z
             code: z.ZodIssueCode.custom,
             message: `Missing water supply evidence reference: ${evidenceID}`,
             path: ["waterSupplyObservations", observationIndex, "evidenceIDs", evidenceIndex],
+          });
+        }
+      });
+    });
+
+    const servicePointObservationIds = new Set<string>();
+    value.servicePointObservations?.forEach((observation, observationIndex) => {
+      if (servicePointObservationIds.has(observation.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Duplicate service point observation id: ${observation.id}`,
+          path: ["servicePointObservations", observationIndex, "id"],
+        });
+      }
+      servicePointObservationIds.add(observation.id);
+
+      if (!areaObservationIds.has(observation.areaID)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `Missing service point area reference: ${observation.areaID}`,
+          path: ["servicePointObservations", observationIndex, "areaID"],
+        });
+      }
+
+      observation.servedByAssetIDs.forEach((assetID, assetIndex) => {
+        if (!observationIds.has(assetID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service point served asset reference: ${assetID}`,
+            path: ["servicePointObservations", observationIndex, "servedByAssetIDs", assetIndex],
+          });
+        }
+      });
+
+      observation.evidenceIDs.forEach((evidenceID, evidenceIndex) => {
+        if (!evidenceObservationIds.has(evidenceID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service point evidence reference: ${evidenceID}`,
+            path: ["servicePointObservations", observationIndex, "evidenceIDs", evidenceIndex],
           });
         }
       });

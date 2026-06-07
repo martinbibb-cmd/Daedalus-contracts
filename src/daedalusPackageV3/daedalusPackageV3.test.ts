@@ -15,6 +15,9 @@ describe("DaedalusPackageV3Schema", () => {
     expect((data.relationships ?? []).map((relationship) => relationship.type)).toEqual(
       expect.arrayContaining(["containedIn", "connectedTo", "controls"])
     );
+    expect(data.servicePointObservations?.map((observation) => observation.servicePointType)).toEqual(
+      expect.arrayContaining(["bathTap"])
+    );
   });
 
   it("rejects schema drift across references", () => {
@@ -154,6 +157,66 @@ describe("DaedalusPackageV3Schema", () => {
 
     expect(result.success).toBe(false);
   });
+
+  it("validates service point observations for outlets and fittings", () => {
+    const packageWithServicePoint = {
+      ...structuredClone(fixture),
+      servicePointObservations: [
+        servicePointObservation({
+          id: "service-point-bath-tap",
+          areaID: "area-airing-cupboard",
+          servicePointType: "bathTap",
+          supplyType: "gravityHot",
+          intendedPressureType: "mainsPressure",
+          servedByAssetIDs: ["cylinder-airing-cupboard"],
+          observedIssues: ["poorFlow", "mismatchSuspected"],
+          evidenceIDs: ["evidence-cylinder-photo"],
+          confidence: "approximate",
+        }),
+      ],
+    };
+
+    const result = validate(DaedalusPackageV3Schema, packageWithServicePoint);
+
+    expect(result.success).toBe(true);
+    expect(result.data?.servicePointObservations?.[0].observedIssues).toEqual(
+      expect.arrayContaining(["poorFlow", "mismatchSuspected"])
+    );
+  });
+
+  it("rejects service points with missing area references", () => {
+    const invalid = {
+      ...structuredClone(fixture),
+      servicePointObservations: [
+        servicePointObservation({
+          areaID: "missing-area",
+        }),
+      ],
+    };
+
+    const result = validate(DaedalusPackageV3Schema, invalid);
+
+    expect(result.success).toBe(false);
+    expect(result.errors?.some((error) => error.path.join(".") === "servicePointObservations.0.areaID")).toBe(true);
+  });
+
+  it("rejects service points with missing served assets or evidence", () => {
+    const invalid = {
+      ...structuredClone(fixture),
+      servicePointObservations: [
+        servicePointObservation({
+          servedByAssetIDs: ["missing-cylinder"],
+          evidenceIDs: ["missing-photo"],
+        }),
+      ],
+    };
+
+    const result = validate(DaedalusPackageV3Schema, invalid);
+
+    expect(result.success).toBe(false);
+    expect(result.errors?.some((error) => error.path.join(".").includes("servedByAssetIDs"))).toBe(true);
+    expect(result.errors?.some((error) => error.path.join(".").includes("evidenceIDs"))).toBe(true);
+  });
 });
 
 function waterObservation(overrides: Record<string, unknown> = {}) {
@@ -181,6 +244,27 @@ function waterObservation(overrides: Record<string, unknown> = {}) {
       captured_at: "2026-06-07T10:00:00Z",
     },
     notes: "Field observation only; no inference made.",
+    ...overrides,
+  };
+}
+
+function servicePointObservation(overrides: Record<string, unknown> = {}) {
+  return {
+    id: "service-point-bath-tap",
+    areaID: "area-airing-cupboard",
+    servicePointType: "bathTap",
+    supplyType: "gravityHot",
+    intendedPressureType: "mainsPressure",
+    servedByAssetIDs: ["cylinder-airing-cupboard"],
+    observedIssues: ["poorFlow"],
+    evidenceIDs: ["evidence-cylinder-photo"],
+    confidence: "approximate",
+    provenance: {
+      method: "service-point-capture",
+      captured_by: "engineer-001",
+      captured_at: "2026-06-07T10:05:00Z",
+    },
+    notes: "Bath tap reported and observed as poor flow; no inference made.",
     ...overrides,
   };
 }
