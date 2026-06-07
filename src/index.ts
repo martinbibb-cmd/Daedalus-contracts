@@ -20,3 +20,4 @@ export * from "./optionalMetadata";
 export * from "./validation";
 export * from "./fixtures";
 export * from "./twin";
+export * from "./daedalusPackageV3";
