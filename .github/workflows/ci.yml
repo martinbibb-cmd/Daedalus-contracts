@@ -7,6 +7,8 @@ on:
 jobs:
   ci:
     runs-on: self-hosted
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
 
     steps:
       - name: Checkout
@@ -29,8 +31,6 @@ jobs:
           npx jest --version
 
       - name: Lint / typecheck
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run lint -- --pretty false
 
       - name: Run tests
