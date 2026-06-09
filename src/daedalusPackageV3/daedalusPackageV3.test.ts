@@ -221,6 +221,27 @@ describe("DaedalusPackageV3Schema", () => {
   it("validates partial domestic water service models", () => {
     const packageWithServiceModel = {
       ...structuredClone(fixture),
+      waterSupplyObservations: [
+        waterObservation({
+          id: "water-flow-cup-kitchen",
+          method: "flowCup",
+          location: "kitchenColdTap",
+          intent: "usableHouseholdCapacity",
+          values: [{ name: "flowRate", value: 16, unit: "l/min" }],
+        }),
+      ],
+      servicePointObservations: [
+        servicePointObservation({
+          id: "service-point-bath-tap",
+          areaID: "area-airing-cupboard",
+          servicePointType: "bathTap",
+          supplyType: "gravityHot",
+          intendedPressureType: "mainsPressure",
+          servedByAssetIDs: ["cylinder-airing-cupboard"],
+          evidenceIDs: ["evidence-cylinder-photo"],
+          confidence: "approximate",
+        }),
+      ],
       serviceModels: [
         {
           id: "domestic-water-service-001",
