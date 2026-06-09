@@ -29,6 +29,8 @@ jobs:
           npx jest --version
 
       - name: Lint / typecheck
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: npm run lint -- --pretty false
 
       - name: Run tests
