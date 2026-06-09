@@ -1,4 +1,4 @@
-// Atlas Contracts Daedalus â€“ public API
+// Atlas Contracts Daedalus – public API
 
 export * from "./core";
 export * from "./property";
