@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ServiceModelSchema } from "../serviceModel";
 
 export const DaedalusPackageRelationshipTypeSchema = z.enum([
   "containedIn",
@@ -259,6 +260,7 @@ export const DaedalusPackageV3Schema = z
     relationships: z.array(DaedalusPackageRelationshipSchema).default([]),
     waterSupplyObservations: z.array(WaterSupplyObservationSchema).default([]),
     servicePointObservations: z.array(ServicePointObservationSchema).default([]),
+    serviceModels: z.array(ServiceModelSchema).default([]),
   })
   .superRefine((value, ctx) => {
     const observationIds = new Set<string>();
@@ -380,6 +382,61 @@ export const DaedalusPackageV3Schema = z
             code: z.ZodIssueCode.custom,
             message: `Missing service point evidence reference: ${evidenceID}`,
             path: ["servicePointObservations", observationIndex, "evidenceIDs", evidenceIndex],
+          });
+        }
+      });
+    });
+
+    const systemAssetIds = new Set(
+      value.observations
+        .filter((observation) => {
+          const tag = observation.tag.toLowerCase();
+          return ["boiler", "cylinder", "thermal store", "water main", "stop tap"].includes(tag);
+        })
+        .map((observation) => observation.observation_id)
+    );
+
+    value.serviceModels?.forEach((model, modelIndex) => {
+      if (model.domain !== "domesticHotWater") {
+        return;
+      }
+
+      model.relatedWaterSupplyObservationIDs.forEach((observationID, referenceIndex) => {
+        if (!waterObservationIds.has(observationID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service model water supply observation reference: ${observationID}`,
+            path: ["serviceModels", modelIndex, "relatedWaterSupplyObservationIDs", referenceIndex],
+          });
+        }
+      });
+
+      model.relatedServicePointObservationIDs.forEach((observationID, referenceIndex) => {
+        if (!servicePointObservationIds.has(observationID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service model service point observation reference: ${observationID}`,
+            path: ["serviceModels", modelIndex, "relatedServicePointObservationIDs", referenceIndex],
+          });
+        }
+      });
+
+      model.relatedSystemAssetIDs.forEach((assetID, referenceIndex) => {
+        if (!systemAssetIds.has(assetID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service model system asset reference: ${assetID}`,
+            path: ["serviceModels", modelIndex, "relatedSystemAssetIDs", referenceIndex],
+          });
+        }
+      });
+
+      model.relatedEvidenceIDs.forEach((evidenceID, referenceIndex) => {
+        if (!evidenceObservationIds.has(evidenceID)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Missing service model evidence reference: ${evidenceID}`,
+            path: ["serviceModels", modelIndex, "relatedEvidenceIDs", referenceIndex],
           });
         }
       });

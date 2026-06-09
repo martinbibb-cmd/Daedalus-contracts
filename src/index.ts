@@ -1,4 +1,4 @@
-// Atlas Contracts Daedalus – public API
+// Atlas Contracts Daedalus â€“ public API
 
 export * from "./core";
 export * from "./property";
@@ -12,6 +12,7 @@ export * from "./occupancy";
 export * from "./constraints";
 export * from "./risks";
 export * from "./serviceability";
+export * from "./serviceModel";
 export * from "./electrical";
 export * from "./evidence";
 export * from "./timeline";

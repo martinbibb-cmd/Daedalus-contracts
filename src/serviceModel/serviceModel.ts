@@ -76,7 +76,7 @@ export const DomesticWaterServiceModelSchema = z
   });
 export type DomesticWaterServiceModel = z.infer<typeof DomesticWaterServiceModelSchema>;
 
-export const ServiceModelSchema = z.discriminatedUnion("domain", [
+export const ServiceModelSchema = z.union([
   DomesticWaterServiceModelSchema,
   z
     .object({
