@@ -261,41 +261,6 @@ export const FIX_001_OpenVentedRegular: SurveyFixtureV1_1 = {
     ],
     contractVersion: "1.1.0",
   },
-  recommendations: {
-    recommendations: [
-      {
-        id: "00000001-0000-0000-0000-000000000900",
-        title: "RecommendationV1 placeholder",
-        placeholder: true,
-      },
-    ],
-    options: [
-      {
-        id: "00000001-0000-0000-0000-000000000901",
-        recommendationId: "00000001-0000-0000-0000-000000000900",
-        label: "OptionV1 placeholder",
-        placeholder: true,
-      },
-    ],
-    tradeOffs: [
-      {
-        id: "00000001-0000-0000-0000-000000000902",
-        optionId: "00000001-0000-0000-0000-000000000901",
-        dimension: "Cost",
-        direction: "Neutral",
-        placeholder: true,
-      },
-    ],
-    pathwayRecommendations: [
-      {
-        id: "00000001-0000-0000-0000-000000000903",
-        pathwayNodeId: "00000001-0000-0000-0000-000000000801",
-        recommendationId: "00000001-0000-0000-0000-000000000900",
-        placeholder: true,
-      },
-    ],
-    contractVersion: "1.1.0",
-  },
   optionalMetadata: {
     address: {
       line1: "1 Atlas Way",

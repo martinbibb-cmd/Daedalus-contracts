@@ -78,11 +78,10 @@ describe("V1.1 fixture constraints", () => {
     expect(fix.waterSupply.profile.peakFlowLPerMin.value).toBeGreaterThan(0);
   });
 
-  it("FIX_004 includes placeholders only and no ASHP recommendation text", () => {
+  it("FIX_004 describes a heat pump pathway without recommendation content", () => {
     const fix = loadFixture(FIX_004_HeatPumpPathway);
-    const recText = JSON.stringify(fix.recommendations);
-    expect(recText).toContain("RecommendationV1 placeholder");
-    expect(recText).not.toMatch(/ASHP recommendations/i);
+    expect(fix.systemComponents.heatGenerators[0].type).toBe("HeatPump");
+    expect(JSON.stringify(fix)).not.toMatch(/recommend/i);
   });
 
   it("rejects core domains inside optionalMetadata", () => {
@@ -109,31 +108,9 @@ describe("V1.1 fixture constraints", () => {
     );
   });
 
-  it("enforces placeholder-only recommendation content", () => {
-    ALL_FIXTURES.forEach((fixture) => {
-      const loaded = loadFixture(fixture);
-      loaded.recommendations.recommendations.forEach((item) => {
-        expect(item.placeholder).toBe(true);
-        expect(item.title.toLowerCase()).toContain("placeholder");
-      });
-      loaded.recommendations.options.forEach((item) => {
-        expect(item.placeholder).toBe(true);
-        expect(item.label.toLowerCase()).toContain("placeholder");
-      });
-      loaded.recommendations.tradeOffs.forEach((item) => {
-        expect(item.placeholder).toBe(true);
-      });
-      loaded.recommendations.pathwayRecommendations.forEach((item) => {
-        expect(item.placeholder).toBe(true);
-      });
-    });
-  });
-
-  it("rejects non-placeholder recommendation text", () => {
+  it("rejects recommendation content as an unexpected fixture domain", () => {
     const invalid = cloneFixture(FIX_001_OpenVentedRegular);
-    invalid.recommendations.recommendations[0].title = "Install ASHP now";
-    expect(() => loadFixture(invalid)).toThrow(
-      "Recommendation at index 0 must remain placeholder-only content"
-    );
+    (invalid as unknown as Record<string, unknown>).recommendations = {};
+    expect(() => loadFixture(invalid)).toThrow();
   });
 });

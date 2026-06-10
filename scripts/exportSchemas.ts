@@ -16,7 +16,6 @@ import {
   EvidenceItemJsonSchema,
   EvidencePackJsonSchema,
   TimelineContractJsonSchema,
-  RecommendationsContractJsonSchema,
   SurveyFixtureJsonSchema,
 } from "../src/index";
 
@@ -39,7 +38,6 @@ const schemas: Record<string, object> = {
   EvidenceItem: EvidenceItemJsonSchema,
   EvidencePack: EvidencePackJsonSchema,
   TimelineContract: TimelineContractJsonSchema,
-  RecommendationsContract: RecommendationsContractJsonSchema,
   SurveyFixture: SurveyFixtureJsonSchema,
 };
 

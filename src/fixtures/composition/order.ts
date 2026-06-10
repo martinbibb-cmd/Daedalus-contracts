@@ -13,6 +13,5 @@ export const FIXTURE_DOMAIN_ORDER = [
   "electrical",
   "evidence",
   "timeline",
-  "recommendations",
   "optionalMetadata",
 ] as const;

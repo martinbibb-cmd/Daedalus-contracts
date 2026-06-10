@@ -18,7 +18,6 @@ const allowedCoreKeys = new Set([
   "electrical",
   "evidence",
   "timeline",
-  "recommendations",
   "optionalMetadata",
 ]);
 

@@ -28,14 +28,11 @@ import { EvidencePackSchema } from "../evidence";
 import type { EvidencePack } from "../evidence";
 import { TimelineContractSchema } from "../timeline";
 import type { TimelineContract } from "../timeline";
-import { RecommendationsContractSchema } from "../recommendations";
-import type { RecommendationsContract } from "../recommendations";
 import { OptionalMetadataSchema } from "../optionalMetadata";
 import type { OptionalMetadata } from "../optionalMetadata";
 import {
   validateHydraulicsClosedLoop,
   validateOptionalMetadataIsolation,
-  validateRecommendationPlaceholders,
   validateV11CorePayload,
 } from "./validators";
 
@@ -57,7 +54,6 @@ export interface SurveyFixtureV1_1 {
   electrical: ElectricalContract;
   evidence: EvidencePack;
   timeline: TimelineContract;
-  recommendations: RecommendationsContract;
   optionalMetadata?: OptionalMetadata;
 }
 export type SurveyFixture = SurveyFixtureV1_1;
@@ -80,7 +76,6 @@ const SurveyFixtureShape: z.ZodRawShape = {
   electrical: ElectricalContractSchema,
   evidence: EvidencePackSchema,
   timeline: TimelineContractSchema,
-  recommendations: RecommendationsContractSchema,
   optionalMetadata: OptionalMetadataSchema.optional(),
 };
 
@@ -95,6 +90,5 @@ export function loadFixture(fixture: SurveyFixtureV1_1): SurveyFixtureV1_1 {
   validateV11CorePayload(loaded);
   validateOptionalMetadataIsolation(loaded);
   validateHydraulicsClosedLoop(loaded);
-  validateRecommendationPlaceholders(loaded);
   return loaded;
 }
