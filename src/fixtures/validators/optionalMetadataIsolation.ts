@@ -16,7 +16,6 @@ const forbiddenOptionalMetadataKeys = [
   "electrical",
   "evidence",
   "timeline",
-  "recommendations",
 ];
 
 export function validateOptionalMetadataIsolation(fixture: SurveyFixtureV1_1): void {

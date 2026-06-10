@@ -16,7 +16,6 @@ export * from "./serviceModel";
 export * from "./electrical";
 export * from "./evidence";
 export * from "./timeline";
-export * from "./recommendations";
 export * from "./optionalMetadata";
 export * from "./validation";
 export * from "./fixtures";

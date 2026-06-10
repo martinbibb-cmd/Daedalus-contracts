@@ -5,7 +5,7 @@ export const FIX_004_HeatPumpPathway: SurveyFixtureV1_1 = {
   ...FIX_001_OpenVentedRegular,
   fixtureId: "FIX_004",
   fixtureName: "HeatPumpPathway",
-  description: "V1.1 pathway fixture with placeholder recommendations only",
+  description: "V1.1 pathway fixture with heat pump system components",
   systemComponents: {
     ...FIX_001_OpenVentedRegular.systemComponents,
     heatGenerators: [
@@ -56,41 +56,6 @@ export const FIX_004_HeatPumpPathway: SurveyFixtureV1_1 = {
         },
       ],
     },
-    contractVersion: "1.1.0",
-  },
-  recommendations: {
-    recommendations: [
-      {
-        id: "00000004-0000-0000-0000-000000000900",
-        title: "RecommendationV1 placeholder",
-        placeholder: true,
-      },
-    ],
-    options: [
-      {
-        id: "00000004-0000-0000-0000-000000000901",
-        recommendationId: "00000004-0000-0000-0000-000000000900",
-        label: "OptionV1 placeholder",
-        placeholder: true,
-      },
-    ],
-    tradeOffs: [
-      {
-        id: "00000004-0000-0000-0000-000000000902",
-        optionId: "00000004-0000-0000-0000-000000000901",
-        dimension: "Carbon",
-        direction: "Neutral",
-        placeholder: true,
-      },
-    ],
-    pathwayRecommendations: [
-      {
-        id: "00000004-0000-0000-0000-000000000903",
-        pathwayNodeId: "00000001-0000-0000-0000-000000000801",
-        recommendationId: "00000004-0000-0000-0000-000000000900",
-        placeholder: true,
-      },
-    ],
     contractVersion: "1.1.0",
   },
 };
