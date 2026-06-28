@@ -1,5 +1,16 @@
-# atlas-contact-dae
-The contracts for the Daedalus version of atlas
+# Daedalus Contracts
+
+Your home is made of three things.
+
+🏠 The House
+⚙️ The Systems
+👨‍👩‍👧‍👦 The Home
+
+Daedalus is the first Digital Twin designed to understand all three.
+
+Daedalus Contracts is the canonical source of truth for shared Daedalus direction, schemas and cross-repository boundaries.
+
+See the [Daedalus Manifesto v1.4](docs/manifesto/DAEDALUS_MANIFESTO_v1.4.md) for the House + Systems + Home mental model that Capture, Main, Platform and AI inherit.
 
 ## Constitutional Boundary
 
