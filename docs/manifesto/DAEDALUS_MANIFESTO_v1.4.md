@@ -1,5 +1,7 @@
 # Daedalus Manifesto v1.4
 
+The Manifesto explains why Daedalus exists. The [Laws of Daedalus](../philosophy/LAWS_OF_DAEDALUS.md) describe how Daedalus thinks.
+
 ## Reality First
 
 Your home is made of three things.
