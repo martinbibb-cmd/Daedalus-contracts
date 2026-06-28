@@ -1,6 +1,6 @@
 # Daedalus Manifesto v1.4
 
-The Manifesto explains why Daedalus exists. The [Laws of Daedalus](../philosophy/LAWS_OF_DAEDALUS.md) describe how Daedalus thinks.
+The Manifesto explains why Daedalus exists. The [Laws of Daedalus](../philosophy/LAWS_OF_DAEDALUS.md) describe how Daedalus thinks. [Daedalus Philosophy Maintenance](../philosophy/PHILOSOPHY_MAINTENANCE.md) defines how the canon is kept coherent.
 
 ## Reality First
 

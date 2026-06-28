@@ -1,5 +1,7 @@
 # The Laws of Daedalus
 
+Philosophical changes are governed by [Daedalus Philosophy Maintenance](PHILOSOPHY_MAINTENANCE.md).
+
 ## Introduction
 
 The Constitution defines the boundaries of Daedalus.

@@ -14,6 +14,8 @@ See the [Daedalus Manifesto v1.4](docs/manifesto/DAEDALUS_MANIFESTO_v1.4.md) for
 
 See [The Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md) for the immutable engineering philosophy behind Daedalus design decisions.
 
+See [Daedalus Philosophy Maintenance](docs/philosophy/PHILOSOPHY_MAINTENANCE.md) for the canon hierarchy and anti-drift process.
+
 ## Constitutional Boundary
 
 This repository is governed by the [Daedalus Platform Constitution v1.2](docs/constitution/DAEDALUS_CONSTITUTION_v1.2.md).
