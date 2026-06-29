@@ -165,10 +165,11 @@ Daedalus Contracts owns:
 - Laws
 - Theorems
 - Mental Models
+- Canonical ontology direction
 
-Daedalus Main mirrors these documents.
+Daedalus Main mirrors these documents and may add domain ontology refinements only when they remain traceable to Contracts-owned canonical concepts.
 
-The Main repository must never diverge from the canonical philosophy.
+The Main repository must never diverge from the canonical philosophy or redefine canonical ontology.
 
 ## Review Mode
 

@@ -12,9 +12,11 @@ Daedalus Contracts is the canonical source of truth for shared Daedalus directio
 
 See the [Daedalus Manifesto v1.4](docs/manifesto/DAEDALUS_MANIFESTO_v1.4.md) for the House + Systems + Home mental model that Capture, Main, Platform and AI inherit.
 
-See [The Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md) for the immutable engineering philosophy behind Daedalus design decisions.
+See [The Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md) for the stable engineering philosophy behind Daedalus design decisions.
 
 See [Daedalus Philosophy Maintenance](docs/philosophy/PHILOSOPHY_MAINTENANCE.md) for the canon hierarchy and anti-drift process.
+
+See [Canonical Ontology Direction](docs/ontology/CANONICAL_ONTOLOGY_DIRECTION.md) for the shared concept ownership and refinement rules.
 
 ## Constitutional Boundary
 

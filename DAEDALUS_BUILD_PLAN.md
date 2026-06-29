@@ -4,7 +4,7 @@ This is the canonical build-plan authority for the Daedalus repositories.
 Other Daedalus repositories keep repo-local projections of this plan and must
 update those projections when cross-repo direction changes.
 
-This plan must remain aligned with the [Constitution](docs/constitution/DAEDALUS_CONSTITUTION_v1.2.md), especially the Projection Rule, the [Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md), and [Daedalus Philosophy Maintenance](docs/philosophy/PHILOSOPHY_MAINTENANCE.md).
+This plan must remain aligned with the [Constitution](docs/constitution/DAEDALUS_CONSTITUTION_v1.2.md), especially the Projection Rule, the [Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md), [Daedalus Philosophy Maintenance](docs/philosophy/PHILOSOPHY_MAINTENANCE.md), and [Canonical Ontology Direction](docs/ontology/CANONICAL_ONTOLOGY_DIRECTION.md).
 
 ## Shared Platform Direction
 
@@ -12,6 +12,7 @@ This plan must remain aligned with the [Constitution](docs/constitution/DAEDALUS
 - Twin belongs to Property.
 - Capture creates property-rooted Working Twins and Capture Sessions.
 - Contracts define shared schemas, boundaries, and validation language.
+- Contracts owns canonical philosophy and ontology direction.
 - Platform stores active Property, Twin, and import metadata.
 - R2 stores package and media objects.
 - Main imports, validates, explains, and renders evidence packs.
@@ -85,6 +86,7 @@ Owns:
 - versioning
 - legacy migration identification
 - shared boundary language
+- canonical philosophy and ontology direction
 
 Must not own:
 
@@ -117,6 +119,8 @@ Do not implement yet:
 - Main must validate package/import behaviour against shared contracts.
 - Platform must validate API inputs against shared contracts.
 - No repo may invent its own property-root semantics silently.
+- No repo may redefine canonical ontology concepts locally.
+- Main may refine domain ontology only when the refinement remains traceable to Contracts-owned canonical concepts.
 - Any cross-repo change must update this build-plan file.
 
 ## Verification
