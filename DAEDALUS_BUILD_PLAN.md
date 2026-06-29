@@ -4,17 +4,32 @@ This is the canonical build-plan authority for the Daedalus repositories.
 Other Daedalus repositories keep repo-local projections of this plan and must
 update those projections when cross-repo direction changes.
 
+This plan must remain aligned with the [Constitution](docs/constitution/DAEDALUS_CONSTITUTION_v1.2.md), especially the Projection Rule, the [Laws of Daedalus](docs/philosophy/LAWS_OF_DAEDALUS.md), and [Daedalus Philosophy Maintenance](docs/philosophy/PHILOSOPHY_MAINTENANCE.md).
+
 ## Shared Platform Direction
 
 - Property is the root identity.
 - Twin belongs to Property.
 - Capture creates property-rooted Working Twins and Capture Sessions.
-- Contracts define shared truth.
+- Contracts define shared schemas, boundaries, and validation language.
 - Platform stores active Property, Twin, and import metadata.
 - R2 stores package and media objects.
 - Main imports, validates, explains, and renders evidence packs.
 - AI may improve readability only; it is not source of truth.
 - Users, billing, permissions, sync, and revenue models are deliberately deferred.
+
+## Canon-Aligned Product Direction
+
+- The Twin is the source of truth.
+- Every report, visualisation, animation, conversation, accessibility narration, customer view, installer view, engineer view, PDF, AR view, and future interface is a projection of the Twin.
+- Build projections from the Twin, not bespoke truth stores.
+- The primary Main experience should move toward a Twin Canvas rather than dashboards or disconnected pages.
+- Reports should become frozen projections of the Twin.
+- Scenarios should compare possible futures, not products.
+- Transformations should show current twin -> changed elements -> future twin.
+- Main should model goals, constraints, challenges, capabilities and consequences.
+- Capture should support additive and deductive reasoning: observations add knowledge and eliminate impossible realities.
+- Unknown, inferred and simulated states must remain visibly distinct.
 
 ## Current Stage
 
@@ -34,21 +49,31 @@ Completed:
 
 These are planned, not implemented:
 
-1. Live deploy verification
-   - Confirm Cloudflare Worker routes.
-   - Confirm D1 migrations applied remotely.
-   - Confirm R2 write.
+1. Canon alignment checkpoint
+   - Confirm Contracts and Main philosophy docs agree.
+   - Confirm Build Plan reflects Constitution, Manifesto, Laws, and Projection Rule.
+2. Real import verification
+   - Confirm live deployment routes.
    - Import real Capture export.
-   - View it in Platform Dashboard.
-2. Main evidence-pack integration
-   - Main can render an Evidence Pack from imported Platform data or stored package JSON.
-   - Still no recommendations.
-3. Capture upload handoff
-   - Capture can export or share package to Platform import endpoint manually.
-   - No full sync yet.
-4. Data portability checkpoint
-   - Confirm D1/R2 schema remains portable.
-   - Export all property and import metadata as JSON.
+   - View property, twin, and import metadata.
+3. Projection foundation
+   - Ensure evidence pack, report, and customer views are projections of the Twin.
+   - No projection owns truth.
+   - No projection hides uncertainty.
+4. Twin Canvas prototype path
+   - Use Daedalus-sandbox to discover visual experience only.
+   - Main remains production implementation.
+   - The sandbox must not become source of truth.
+5. Transformation modelling path
+   - Define current twin -> transformation -> future twin.
+   - Show removed, added, modified, and unchanged elements.
+   - Preserve uncertainty and avoid recommendations.
+6. Goal modelling path
+   - Distinguish goals, preferences, constraints, and challenges.
+   - Goals belong to the Home.
+   - Constraints belong to reality.
+   - Challenges belong to implementation.
+   - Human decision remains final.
 
 ## Repo Responsibility: Daedalus-contracts
 
@@ -58,7 +83,7 @@ Owns:
 - package schemas
 - validation rules
 - versioning
-- legacy upgrade identification
+- legacy migration identification
 - shared boundary language
 
 Must not own:

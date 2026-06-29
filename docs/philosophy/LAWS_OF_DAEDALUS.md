@@ -8,11 +8,25 @@ The Constitution defines the boundaries of Daedalus.
 
 The Manifesto explains its purpose.
 
-The Laws describe the immutable truths from which every design decision, feature, model and explanation should naturally emerge.
+The Laws describe the stable truths from which every design decision, feature, model and explanation should naturally emerge.
 
 The Laws do not describe implementation.
 
 They describe reality.
+
+The Laws are scientific-style laws.
+
+They are testable, falsifiable, refinable and stable until deeper understanding improves them.
+
+They are not sacred dogma.
+
+They are not legal commandments.
+
+A refined Law may extend or clarify an earlier Law without making the earlier Law useless.
+
+Newtonian mechanics was not made useless by Einstein. It was placed inside a deeper understanding.
+
+The same standard applies here: refinement should deepen the Canon, not discard working truth without cause.
 
 A future engineer should be able to evaluate a proposed feature simply by asking:
 
@@ -143,6 +157,8 @@ The user remains responsible for the decision.
 ## Future Work
 
 These Laws are expected to evolve as deeper principles are discovered.
+
+When a Law is refined, the refinement should explain what the earlier Law still covers and what the deeper understanding adds.
 
 When a new Law is added, it should clarify an underlying truth that was already present in the system.
 

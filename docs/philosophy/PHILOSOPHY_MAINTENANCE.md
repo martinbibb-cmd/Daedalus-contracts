@@ -89,11 +89,27 @@ Preferred terms include:
 
 If terminology drifts, standardise it.
 
+## Meaning of Law
+
+Daedalus uses Law in the scientific sense.
+
+A Law is testable, falsifiable, refinable and stable until deeper understanding improves it.
+
+A Law is not sacred dogma.
+
+A Law is not a legal commandment.
+
+A refined Law may extend or clarify an earlier Law without making the earlier Law useless.
+
+The standard is careful refinement, not casual replacement.
+
 ## Law Test
 
 A Law must satisfy all of these:
 
-- Always true.
+- Testable.
+- Falsifiable.
+- Stable until deeper understanding improves it.
 - Independent of implementation.
 - Applies to every future version of Daedalus.
 - Violating it would fundamentally change Daedalus.
