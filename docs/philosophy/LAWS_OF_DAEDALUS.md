@@ -1,6 +1,6 @@
 # The Laws of Daedalus
 
-Philosophical changes are governed by [Daedalus Philosophy Maintenance](PHILOSOPHY_MAINTENANCE.md).
+Philosophical changes are governed by [Daedalus Philosophy Maintenance](PHILOSOPHY_MAINTENANCE.md). Projection boundaries are governed by the [Constitution](../constitution/DAEDALUS_CONSTITUTION_v1.2.md).
 
 ## Introduction
 

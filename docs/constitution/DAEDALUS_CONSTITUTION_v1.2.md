@@ -73,6 +73,30 @@ Unknown is a valid state. Approximate is a valid state. Unresolved is a valid st
 
 Captured evidence is source material. Derived outputs must be stored separately from captured evidence.
 
+## Projection Rule
+
+The Digital Twin is the source of truth.
+
+Every report, visualisation, animation, conversation, accessibility narration, AR view, customer view, installer view, engineer view, PDF, and future interface is a projection of the Digital Twin.
+
+A projection may reveal the Twin.
+
+A projection may explain the Twin.
+
+A projection may make the Twin easier to understand.
+
+A projection must never become the Twin.
+
+A projection must never invent truth.
+
+A projection must never hide uncertainty.
+
+A projection must never alter model state unless the user is explicitly performing a governed update to the Twin.
+
+Every projection must remain traceable to the underlying model.
+
+This rule protects One Truth, Many Views.
+
 ## Module Boundaries
 
 ### Capture
